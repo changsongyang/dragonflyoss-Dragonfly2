@@ -51,6 +51,7 @@ func (v *Vertex) OutDegree() int {
 	return int(v.Children.Len())
 }
 
+// DeleteInEdges deletes inedges of vertex.
 func (v *Vertex) DeleteInEdges() {
 	v.Parents.Range(func(value any) bool {
 		vertex, ok := value.(*Vertex)
@@ -65,6 +66,17 @@ func (v *Vertex) DeleteInEdges() {
 	v.Parents = set.NewSafeSet()
 }
 
+// DeleteOutEdges deletes outedges of vertex.
 func (v *Vertex) DeleteOutEdges() {
+	v.Children.Range(func(value any) bool {
+		vertex, ok := value.(*Vertex)
+		if !ok {
+			return false
+		}
 
+		vertex.Parents.Delete(v)
+		return true
+	})
+
+	v.Children = set.NewSafeSet()
 }
